@@ -1,0 +1,350 @@
+#include <stdlib.h>
+#include <string.h>
+#include <stdio.h>
+#include <fstream.h>
+#include <conio.h>
+#define max 10
+
+//the header file
+
+fstream f;
+
+class med	//base class
+{
+	public:
+		long receipt_number;
+		char customerName[20];
+		char date[15];
+		int quantity[10];
+		char type[5];
+		int x, menu2[10];
+		double amount[10];
+		static const char medicineName[10][20];
+		static const float mcost[10];
+		double total;
+		med()
+		{
+			strcpy(type,"OTC");
+		}
+
+    void take_order();//to  take_order
+    void delete_order(); //to delete the order
+    void modify(); //to modify the order
+	void order_list(); //to display the order_list
+	void daily_summary(); //to display daily_summary
+	void exit();  //function to exit system
+	medicineType();//constuctor
+
+}m;
+
+
+const char med::medicineName[][20]={"Probiotics","Vitamin C(500mg)",
+	"Acid Free C(500mg)","Women'S Multivate","Marino Tablet",
+	"Maxi Cal Tablet","Amino Zinc Tablet","Burnex",
+	"Fabuloss 5","Royal Propollen"}; //initialising medicine names
+const float med::mcost[]={2.00,3.00,1.00,4.00,1.00,
+			       5.00,7.00,4.00,3.00,5.00}; //initialising cost
+
+
+int main()	// Main function
+{
+	int menu;
+	do
+	{
+		clrscr();
+		cout<<"\t\t\t    Pharmacy Management System \n";
+		cout<<"\t\t==================================================\n\n";
+		cout<<"\t\t--------------------------------------------------\n";
+		cout<<"\t\t||\t1. New Medicine Order \t\t\t||\n";
+		cout<<"\t\t||\t2. Delete Medicine Order\t\t||\n";
+		cout<<"\t\t||\t3. Modify Medicine Order \t\t||\n";
+		cout<<"\t\t||\t4. Display A Medicine Order \t\t||\n";
+		cout<<"\t\t||\t5. Display All Existing Orders \t\t||\n";
+		cout<<"\t\t||\t6. Exit\t\t\t\t\t||\n";
+		cout<<"\t\t--------------------------------------------------\n";
+		cout<<"\t\tEnter Choice: ";
+		cin>>menu;
+		switch (menu)
+		{
+		case 1:
+			{
+				f.open("med.dat",ios::app|ios::binary);
+				m.take_order();	//function add
+				f.write((char*)&m,sizeof(m));
+				f.close();
+				break;
+			}	//end case 1
+
+
+		case 2:
+			{
+				m.delete_order();	//function delete
+				getch();
+				break;
+			}	//end case 2
+
+		case 3:
+			{
+				m.modify();	//function modify
+				getch();
+				break;
+			}	//end case 3
+
+		case 4:
+			{
+				m.order_list();	//function order
+				getch();
+				break;
+			}	//end case 4
+		case 5:
+			{
+				m.daily_summary();	//function daily_summary
+				getch();
+				break;
+			}	//end case 5
+	case 6:
+			{
+				exit(0);	//function exit
+				break;
+			}	//end case 6
+
+
+		default:
+			{
+				cout<<"\nInvalid Option. Try Again."<<endl;
+				getch();
+				break;
+			}//end defeault
+		}//end Switch
+	}while(1);//end do
+}//end  main function
+
+
+void med::take_order()		//function to take_order
+{
+	clrscr();
+	int i;
+	int choice, quantity, price,None;
+	cout <<"\nAdd Order Details\n";
+	cout <<"_____________________________________ \n\n";
+	cout <<"**************************************************************************\n";
+	cout<<"DRUGS ID"<<"\tDRUGS TYPE"<<"   \t\tDRUGS NAME"<<"           DRUGS PRICE(Rs.)"<<endl;
+	cout <<"**************************************************************************\n";
+	cout<<"0001"<<"\t"<<"\tOTC"<<"\t\t"<<"    Probiotics"<<"			Rs. 2.00"<<endl;
+	cout<<"0002"<<"\t"<<"\tOTC"<<"\t\t"<<"    Vitamin C(500mg)"<<"		Rs. 3.00"<<endl;
+	cout<<"0003"<<"\t"<<"\tOTC"<<"\t\t"<<"    Acid Free C(500mg)"<<"		Rs. 1.00"<<endl;
+	cout<<"0004"<<"\t"<<"\tOTC"<<"\t\t"<<"    Women'S Multivate"<<"		Rs. 4.00"<<endl;
+	cout<<"0005"<<"\t"<<"\tOTC"<<"\t\t"<<"    Marino Tablet"<<"	 	Rs. 1.00"<<endl;
+	cout<<"0006"<<"\t"<<"\tOTC"<<"\t\t"<<"    Maxi Cal Tablet"<<" 		Rs. 5.00"<<endl;
+	cout<<"0007"<<"\t"<<"\tOTC"<<"\t\t"<<"    Amino Zinc Tablet"<<"		Rs. 7.00"<<endl;
+	cout<<"0008"<<"\t"<<"\tOTC"<<"\t\t"<<"    Burnex"<<"			Rs. 4.00"<<endl;//1353fn
+	cout<<"0009"<<"\t"<<"\tOTC"<<"\t\t"<<"    Fabuloss 5"<<"			Rs. 3.00"<<endl;
+	cout<<"0010"<<"\t"<<"\tOTC"<<"\t\t"<<"    Royal Propollen"<<"		Rs. 5.00"<<endl;
+	cout<<" "<<endl;
+	cout << "Enter Receipt Number(1-999): ";
+    cin >>m.receipt_number;
+	cout<< "Enter Customer Name: ";
+	cin>>m.customerName;
+	cout<<"Enter Date(dd/mm/yyyy) : ";
+	cin>>m.date;
+	cout << "Enter No. Of Unique Medcines You Wish To Buy:"<< endl;
+	cout<<"( Maximum Is 5 per Transaction ) \n";
+	cout << "  " ;
+	cin >>m.x;
+	if (m.x >5)
+	{
+		cout << "Your Order Is Exceeding The Maximum Amount!";
+		getch();
+	}
+	else
+	{
+		for (i=0; i<m.x; i++)
+		{
+			cout << "Enter Medicine Index(1-10): "<<endl;
+			cin>>m.menu2[i];
+			cout<< "Medicine Name: " <<m.medicineName[m.menu2[i]-1]<<endl;
+			cout << "Enter Quantity Of Medicine: ";
+			cin >>m.quantity[i];
+			m.amount[i] = m.quantity[i] * m.mcost[m.menu2[i]-1];
+			cout << "Amount: Rs." <<m.amount[i]<<endl;
+			getch();
+		}
+		cout<<"==========================================================================="<<endl;
+		cout << "Order Taken Successfully"<<endl;
+		cout<<"==========================================================================="<<endl;
+		cout << "Go to Receipt Menu to Pay The Bill"<<endl;
+		cout<<"==========================================================================="<<endl;
+		getch();
+		clrscr();
+	}
+}//End function take_order
+
+void med::order_list()		//Function to display receipt
+{
+	f.open("med.dat",ios::in|ios::binary);
+	int i, num, num2;
+	int found;			//variable to search
+	clrscr();
+	found = 0;
+	cout<<" Enter the Reciept Number To Print The Reciept\n";
+	cin>>num2;
+	cout<<"\n";
+	cout<<"==========================================================================="<<endl;
+	cout <<"\t\tHere is the Order list\n";
+	cout<<"==========================================================================="<<endl;
+	if(f.eof()) //Invalid receipt code
+	{
+		cout << "\tThere is no Order to show\n\t\t\tSo The List is Empty\n\n\n";
+	}
+	while(!f.eof() && found==0)
+	{
+		f.read((char*)&m,sizeof(m));
+		if (m.receipt_number==num2)
+		{
+			cout <<"Receipt Number : "<<m.receipt_number;
+			cout <<"\n";
+			cout<<"Customer Name: "<<m.customerName<<endl;
+			cout<<"Order Date : "<<m.date<<endl;
+			cout<<"_____________________________________________________________________________"<<endl;
+			cout << "===============================================================================" << endl;
+			cout << "|  Medicine Type |     Medicine Name    |  	Quantity     |    Total Price |" << endl;
+			cout << "=======++==================++================++===============++===============" << endl;
+			for (i=0;i<m.x;i++)
+			{
+				cout << m.type <<"  \t\t";
+				cout<<m.medicineName[m.menu2[i]-1]<<"\t\t\t  ";
+				cout<<m.quantity[i] <<"\t\t";
+				cout<<"Rs. "<< m.amount[i]<<endl;
+				cout<<"_________________________________________________________________________________"<<endl;
+			}
+			m.total = m.amount[0]+m.amount[1]+m.amount[2]
+				 +m.amount[3]+m.amount[4]+m.amount[5]
+				 +m.amount[6]+m.amount[7]+m.amount[8]
+				 +m.amount[9];
+			cout<<"Total Bill is : Rs."<<m.total;
+			cout<<"\n";
+			cout <<"\n_______________________________________________________________________________\n";
+			found=1;
+		}getch();
+	}
+	if(found==0)
+	{
+		cout<<"\nRecord not found.";
+	}
+	f.close();
+}	//End function order_list
+
+void med::delete_order()	//function to delete_order
+{
+	clrscr();
+	ifstream fi("med.dat",ios::in|ios::binary);
+	ofstream fo("temp.dat",ios::out|ios::binary);
+	int i, num;
+	cout<<"Enter The Receipt Number For The Order You Want To Delete: \n";
+	cin>>num;
+	int found=0;
+	while(!fi.eof())
+	{
+		fi.read((char*)&m,sizeof(m));
+		if(m.receipt_number!=num)
+		{
+			fo.write((char*)&m,sizeof(m));
+		}
+		else
+		{
+			found=1;
+		}
+	}
+	if(found==0)
+	{
+		cout<<"\nRecord Not Found.";
+	}
+	if(found==1)
+	{
+		cout<<"\nRecord Successfully Deleted.";
+	}
+	fo.close();
+	fi.close();
+	remove("med.dat");
+	rename("temp.dat","med.dat");
+}	//End function delete_order
+
+void med::modify()
+{
+	f.open("med.dat",ios::in|ios::out|ios::binary);
+	int rno,found =0; long pos;
+	cout<<"\nEnter Receipt Number Of The Order You Want To Modify: ";
+	cin>>rno;
+	while(!f.eof())
+	{
+		pos=f.tellg();
+		f.read((char*)&m,sizeof(m));
+		if(m.receipt_number==rno)
+		{
+			cout<<"\nEnter New Details: ";
+			m.take_order();
+			f.seekg(pos);
+			f.write((char*)&m,sizeof(m));
+			found=1;
+			break;
+	       }
+	} //closing while
+	if(found==0)
+	{
+		cout<<"\nRecord Not Found.";
+	}
+	f.close();
+}
+
+void med::daily_summary()		//Function to display Daily Summary
+{
+	f.open("med.dat",ios::in|ios::binary);
+	int i,num;
+	clrscr();
+	if(f.eof()) //Invalid receipt code
+	{
+		cout << "\t\t\tThere is no Order to show\n\t\t\tSo The List is Empty\n\n\n";
+	}
+	else
+	{
+		cout<<"\n";
+		cout<<"==========================================================================="<<endl;
+		cout <<" \t\tHere is the Daily Summary of All Orders \n"; //print all receipt
+		cout<<"==========================================================================="<<endl;
+		f.seekg(0);
+		while(f.read((char*)&m,sizeof(m)))
+		{
+			;
+			cout <<"\nReceipt Number : "<<m.receipt_number;
+			cout <<"\n";
+			cout<<"Customer Name: "<<m.customerName<<endl;
+			cout<<"Order Date : "<<m.date<<endl;
+			cout<<"____________________________________________________________________________"<<endl;
+			cout << "==========================================================================" << endl;
+			cout << "|  Medicine Type |   Medicine Name    |    Quantity     |    Total Price |" << endl;
+			cout << "=======++==================++================++===============++==========" << endl;
+			for (i=0;i<m.x;i++)
+			{
+				cout << m.type <<"  \t\t";
+				cout<<m.medicineName[m.menu2[i]-1]<<"\t\t";
+				cout<<m.quantity[i] <<"\t\t";
+				cout<<m.amount[i]<<" Rs."<<endl;
+				cout<<"_____________________________________________________________________________"<<endl;
+			}
+			m.total = m.amount[0]+m.amount[1]+m.amount[2]
+				+m.amount[3]+m.amount[4]+m.amount[5]
+				+m.amount[6]+m.amount[7]+m.amount[8]
+				+m.amount[9];
+			cout<<"Total Bill is : "<<m.total;
+			cout<<"_____________________________________________________________________________"<<endl;
+
+			getch();
+			clrscr();
+		}
+
+	}
+	f.close();
+}		//End daily summary
+
+
+////////////////////////////THE END OF PROGRAM//////////////////////////////////////////
